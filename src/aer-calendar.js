@@ -1,6 +1,6 @@
 /**
  *
- * Aer Calendar v0.1.1
+ * Aer Calendar v0.1.2
  * -------------------
  * A calendar plugin that extends jQuery to add a generateCalendar() function,
  * adds a <calendar> element through jQuery and provides a generate() function
@@ -20,6 +20,8 @@
  * --------------------------------
  * -Changed 'Calendar' to 'calendar' so there's no confusion that it's not a
  *    constructor.
+ * -Added support for multiple calendars declared in the DOM. All three methods
+ *    of calendar generation can now make multiple calendars.
  */
 
 var calendar = {
@@ -100,7 +102,12 @@ var calendar = {
   },
 
   $generate: function(year, month) {
-    this.html(calendar.generate(year, month));
+    /**
+     * TODO: Run tests to see if .each() here is redundant
+     */
+    this.each(function() {
+      $(this).html(calendar.generate(year, month));
+    });
   }
 }
 
@@ -112,10 +119,10 @@ var calendar = {
  */
 if($) {
   $(function() {
-    var n = $('calendar');
     $.fn.generateCalendar = calendar.$generate;
-    n.generateCalendar(n.attr('year'), n.attr('month'));
 
-    $('#cal-back-button').click
+    $('calendar').each(function(){
+      $(this).generateCalendar($(this).attr('year'), $(this).attr('month'));
+    });
   });
 }
