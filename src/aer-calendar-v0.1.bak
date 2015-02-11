@@ -1,7 +1,7 @@
 /**
  *
- * Aer Calendar v0.1.1
- * -------------------
+ * Aer Calendar v0.1
+ * -----------------
  * A calendar plugin that extends jQuery to add a generateCalendar() function,
  * adds a <calendar> element through jQuery and provides a generate() function
  * to allow use outside of jQuery.
@@ -10,19 +10,14 @@
  * ----------------
  * -Generated month changing buttons with handlers
  * -Animations on month change
- * -Maybe add calendar helper functions to allow for getting calendar
+ * -Maybe add Calendar helper functions to allow for getting calendar
  *    information
  * -Maybe classes for cells to differentiate between them.
- * -Google calendar API support for easy integration
- * -Support multiple calendars
+ * -Google Calendar API support for easy integration
  *
- * Changes Since Last Major Version
- * --------------------------------
- * -Changed 'Calendar' to 'calendar' so there's no confusion that it's not a
- *    constructor.
  */
 
-var calendar = {
+var Calendar = {
 
   /**
    * Returns the number of days in a month.
@@ -77,19 +72,19 @@ var calendar = {
      * Index through the remaining days of the month and fill the cells with
      * their date.
      */
-    for(d = 1; d <= calendar.getDaysInMonth(year, month); i++, d++) {
+    for(d = 1; d <= Calendar.getDaysInMonth(year, month); i++, d++) {
       cal += '<td>' + d + '</td>';
       /**
        * If the current index is a multiple of seven, loop down to the next row
        * to maintain a seven day week.
        */
-      if(i % 7 == 0 && d != calendar.getDaysInMonth(year, month))
+      if(i % 7 == 0 && d != Calendar.getDaysInMonth(year, month))
         cal += '</tr><tr>';
       /**
        * If the current day is the last day of the month, end the calendar
        * generation.
        */
-      else if (d == calendar.getDaysInMonth(year, month)) {
+      else if (d == Calendar.getDaysInMonth(year, month)) {
         cal += '</tr></tbody</table>';
       }
     }
@@ -100,7 +95,7 @@ var calendar = {
   },
 
   $generate: function(year, month) {
-    this.html(calendar.generate(year, month));
+    this.html(Calendar.generate(year, month));
   }
 }
 
@@ -113,9 +108,7 @@ var calendar = {
 if($) {
   $(function() {
     var n = $('calendar');
-    $.fn.generateCalendar = calendar.$generate;
+    $.fn.generateCalendar = Calendar.$generate;
     n.generateCalendar(n.attr('year'), n.attr('month'));
-
-    $('#cal-back-button').click
   });
 }
