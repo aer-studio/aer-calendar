@@ -54,7 +54,7 @@
 
 
      // If not passed any variables, default to the present day
-     if(year === null && month === null) {
+     if(year == null && month == null) {
        var o = new Date();
        year = o.getFullYear();
        month = o.getMonth() + 1;
