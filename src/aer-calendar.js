@@ -32,27 +32,42 @@ var aerCalendarMonthNames = ['January', 'February', 'March', 'April', 'May',
                              'June', 'July', 'August', 'September', 'October',
                              'November', 'December'];
 
-function Calendar(elementId, year, month) {
+function Calendar() {
 
   /**                    **\
    *   INITIAL HANDLING   *
   \**                    **/
+  if(arguments.length == 1
+      && typeof arguments[0] == 'string') {
+    this.element = document.getElementById(arguments[0]);
+    this.month = new Date().getMonth() + 1;
+    this.year = new Date().getFullYear();
+  } else if(arguments.length == 2 
+      && typeof arguments[0] == 'string'
+      && typeof arguments[1] == 'number') {
+    this.element = document.getElementById(arguments[0]);
+    this.month = arguments[1];
+    this.year = new Date().getFullYear();
+  } else if(arguments.length == 3
+      && typeof arguments[0] == 'string'
+      && typeof arguments[1] == 'number'
+      && typeof arguments[2] == 'number') {
+    this.element = document.getElementById(arguments[0]);
+    this.month = arguments[1];
+    this.year = arguments[2];
+  } else if(arguments.length = 1
+      && typeof arguments[0] == 'object'
+      && typeof arguments[0].id == 'string') {
+    var arg = arguments[0];
 
-  // Setting params to scoped vars
-  this.year = year;
-  this.month = month;
-  this.element = document.getElementById(elementId);
+    this.element = document.getElementById(arg.id);
+    typeof arg.month == 'number' ? this.month = arg.month : this.month = new Date().getMonth() + 1;
+    typeof arg.year == 'number' ? this.year = arg.year : this.year = new Date().getFullYear();
+  }
 
   // If there are numbers outside the bounds allowed, return an error
-  if(month < 0 || year < 0 || month > 12) {
+  if(this.month < 0 || this.year < 0 || this.month > 12) {
     console.error('The year and/or month are outside the bounds.');
-  }
-  // If the year or month are not provided, set them to the current day
-  if(year == null) {
-    year = new Date().getFullYear();
-  }
-  if(month == null) {
-    month = new Date().getMonth();
   }
 
 
@@ -69,7 +84,7 @@ function Calendar(elementId, year, month) {
 
 
   /**                       **\
-   *   CALENDAR GENERATION   *
+   *   CALENDAR GENERATION   **
   \**                       **/
 
   this.generate = function() {
