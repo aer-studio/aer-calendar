@@ -3,12 +3,16 @@
 Aer Calendar is a JavaScript library that allows for easy generation of calendars using a constructor.
 
 # How to Use
-To use the Aer Calendar library, you must first provide an element with an ID, for example:
-<pre>&lt;div id=&#39;calendar&#39;&gt;&lt;&#47;div&gt;</pre>
-Then, make a new Calendar object and generate the calendar:
+You can pass arguments into the constructor four ways:
 <pre>
-var calendar = new Calendar('calendar', 2015, 2);
-calendar.generate();
+new Calendar(id)
+new Calendar(id, month) // defaults to current
+new Calendar(id, month, year)
+new Calendar({
+  id: required,
+  month: optional, // defaults to current
+  year: optional   // defaults to current
+})
 </pre>
 
 # CSS classing
