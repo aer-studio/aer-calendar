@@ -5,15 +5,6 @@
  * Aer Calendar is a JavaScript library that allows for easy generation of
  * calendars using a constructor.
  *
- * How To Use
- * ----------
- * <div id='calendar'></div>
- * ...
- * <script>
- *   calendar = new Calendar(2015, 2, 'calendar');
- *   calendar.generate();
- * </script>
- *
  * License
  * -------
  * Copyright (c) 2015, Aer Studio and Zac Canoy
@@ -41,7 +32,7 @@ var aerCalendarMonthNames = ['January', 'February', 'March', 'April', 'May',
                              'June', 'July', 'August', 'September', 'October',
                              'November', 'December'];
 
-function Calendar(year, month, elementId) {
+function Calendar(elementId, year, month) {
 
   /**                    **\
    *   INITIAL HANDLING   *
@@ -70,7 +61,7 @@ function Calendar(year, month, elementId) {
   \**                             **/
 
   this.getDaysInMonth = function() {
-    return Math.floor((new Date(year, month, 0) - new Date(year, month - 1, 1)) / 86400000) + 1;
+    return Math.floor((new Date(this.year, this.month, 0) - new Date(this.year, this.month - 1, 1)) / 86400000) + 1;
   };
   this.getMonthName = function() {
     return aerCalendarMonthNames[this.month - 1];
