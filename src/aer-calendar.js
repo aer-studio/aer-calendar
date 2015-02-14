@@ -1,123 +1,148 @@
 /**
  *
- * Aer Calendar v0.1.3
- * -------------------
- * A calendar plugin that extends jQuery to add a generateCalendar() function,
- * adds a <calendar> element through jQuery and provides a generate() function
- * to allow use outside of jQuery.
+ * Aer Calendar v1.0
+ * -----------------
+ * Aer Calendar is a JavaScript library that allows for easy generation of
+ * calendars using a constructor.
  *
- * Future Additions
- * ----------------
- * -Generated month changing buttons with handlers
- * -Animations on month change
- * -Maybe add calendar helper functions to allow for getting calendar
- *    information
- * -Maybe classes for cells to differentiate between them.
- * -Google calendar API support for easy integration
+ * How To Use
+ * ----------
+ * <div id='calendar'></div>
+ * ...
+ * <script>
+ *   calendar = new Calendar(2015, 2, 'calendar');
+ *   calendar.generate();
+ * </script>
  *
- * Changes Since Last Major Version
- * --------------------------------
- * v0.1.1
- * -Changed 'Calendar' to 'calendar' so there's no confusion that it's not a
- *    constructor.
- * v0.1.2
- * -Added support for multiple calendars declared in the DOM. All three methods
- *    of calendar generation can now make multiple calendars.
- * v0.1.3
- * -Removed redundant each() functions in $generate().
- * -Cleaned code
- * -Improved comments
+ * License
+ * -------
+ * Copyright (c) 2015 Aer Studio and Zac Canoy
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
+ * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ * IN THE SOFTWARE.
  */
 
- var calendar = {
+var aerCalendarMonthNames = ['January', 'February', 'March', 'April', 'May',
+                             'June', 'July', 'August', 'September', 'October',
+                             'November', 'December'];
 
-   // Returns the number of days in a month
-   getDaysInMonth: function(year, month) {
+function Calendar(year, month, elementId) {
 
-     return Math.floor((new Date(year, month, 0) - new Date(year, month - 1, 1)) / 86400000) + 1;
+  /**                    **\
+   *   INITIAL HANDLING   *
+  \**                    **/
 
-   },
+  // Setting params to scoped vars
+  this.year = year;
+  this.month = month;
+  this.element = document.getElementById(elementId);
 
-   // Generates the DOM for a calendar
-   generate: function(year, month) {
-
-     /**
-      * cal - for storing the string to be passed to append to make the
-      *     calendar. TODO: See if there is a better way to represent DOM with
-      *     this string.
-      *
-      * i - an index for storing which cell the generator is in.
-      *
-      * d - an index for storing which day the generator is in.
-      */
-     var cal, i, d;
-
-
-     // If not passed any variables, default to the present day
-     if(year == null && month == null) {
-       var o = new Date();
-       year = o.getFullYear();
-       month = o.getMonth() + 1;
-     }
+  // If there are numbers outside the bounds allowed, return an error
+  if(month < 0 || year < 0 || month > 12) {
+    console.error('The year and/or month are outside the bounds.');
+  }
+  // If the year or month are not provided, set them to the current day
+  if(year == null) {
+    year = new Date().getFullYear();
+  }
+  if(month == null) {
+    month = new Date().getMonth();
+  }
 
 
-     // If one variable is passed, an error is thrown
-     // TODO: Default to present month or year when it's excluded.
-     else if(year ? !month : month) {
-       $.error('Only one variable passed to function generateCalendar, or a variable passed is 0\nSyntax:\n  $(selector).generateCalendar(<year>, <month>) OR\n  $(selector).generateCalendar()');
-     }
+  /**                             **\
+   *   HELPER AND USER FUNCTIONS   *
+  \**                             **/
 
-     // If a variable outside the allowed bounds is passed, an error is thrown
-     else if(year < 0 || month < 0 || month > 12) {
-       $.error('One or more variables have exceeded or are beneath the allowed bounds');
-     }
-
-
-     // initialize cal variable value
-     cal = '<table><thead><tr><th>S</th><th>M</th><th>T</th><th>W</th><th>T</th><th>F</th><th>S</th></tr></thead><tbody><tr>';
+  this.getDaysInMonth = function() {
+    return Math.floor((new Date(year, month, 0) - new Date(year, month - 1, 1)) / 86400000) + 1;
+  };
+  this.getMonthName = function() {
+    return aerCalendarMonthNames[this.month - 1];
+  }
 
 
-     // Make empty cells for days before the month starts
-     for(i = 1; i <= new Date(year, month - 1, 1).getDay(); i++) {
-       cal += '<td></td>';
-     }
+  /**                       **\
+   *   CALENDAR GENERATION   *
+  \**                       **/
 
-     // Fill in the days of the month
-     for(d = 1; d <= calendar.getDaysInMonth(year, month); i++, d++) {
-       cal += '<td>' + d + '</td>';
+  this.generate = function() {
+    /**
+     *   output ---- the output string from the calendar generation
+     *   cellIndex - stores which cell the generator is currently in
+     *   dayIndex -- stores which day the generator is currently in
+     */
+    var output, cellIndex, dayIndex;
 
-       // Make a new row when the day is a multiple of seven
-       if(i % 7 === 0 && d != calendar.getDaysInMonth(year, month)) {
-         cal += '</tr><tr>';
-       }
+    // Generate the header
+    var output = '<table class=\'aer-calendar\'><div>' + this.getMonthName() + ' ' + this.year + '</div><div><button class=\'aer-calendar-prev-button\'>Prev</button><button class=\'aer-calendar-next-button\'>Next</button></div><thead><tr><th>S</th><th>M</th><th>T</th><th>W</th><th>T</th><th>F</th><th>S</th></tr></thead><tbody><tr>';
 
-       // End generation on the last day of the month
-       else if (d == calendar.getDaysInMonth(year, month)) {
-         cal += '</tr></tbody></table>';
-       }
-     }
-     // Return the string of DOM for handling by other scripting
-     return cal;
-   },
+    // Make empty cells before the start of the month
+    for(cellIndex = 1; cellIndex <= new Date(this.year, this.month - 1, 1).getDay(); cellIndex++) {
+      output += '<td></td>';
+    }
 
-   // Extends jQuery to allow easy calendar generation on any selector
-   $generate: function(year, month) {
-     $(this).html(calendar.generate(year, month));
-   }
- };
+    // Fill in the days of the month
+    for(dayIndex = 1; dayIndex <= this.getDaysInMonth(this.year, this.month); cellIndex++, dayIndex++) {
+      output += '<td>' + dayIndex + '</td>';
 
- // Tests if jQuery is loaded
- if(window.jQuery) {
-   // Code ran when the document is loaded
-   $(function() {
+      // Make a new row when the day is a multiple of seven
+      if(cellIndex % 7 === 0 && dayIndex != this.getDaysInMonth(this.year, this.month)) {
+        output += '</tr><tr>';
+      }
 
-     // Extends jQuery to add a generateCalendar method
-     $.fn.generateCalendar = calendar.$generate;
+      // End generation on the last day of the month
+      else if (dayIndex == this.getDaysInMonth(this.year, this.month)) {
+        output += '</tr></tbody></table>';
+      }
+    }
+    // Return the string of DOM for handling by other scripting
+    this.element.innerHTML = output;
+  };
 
-     // For each instance of a calendar in DOM, generate a calendar
-     $('calendar').each(function(){
-       var a = $(this);
-       a.generateCalendar(a.attr('year'), a.attr('month'));
-     });
-   });
- }
+
+  /**                                **\
+   *   BUTTON HANDLING AND FUNTIONS   *
+  \**                                **/
+
+  this.element.addEventListener('click', function(event) {
+    this.handleButtonEvents(event)
+  }.bind(this));
+
+  this.handleButtonEvents = function(event) {
+    target = event.target.className;
+
+    if(target == 'aer-calendar-prev-button') {
+      if(this.month == 1) {
+        this.year -= 1;
+        this.month = 12;
+      } else {
+        this.month -= 1;
+      }
+    } else if(target == 'aer-calendar-next-button') {
+      if(this.month == 12) {
+        this.year += 1;
+        this.month = 1;
+      } else {
+        this.month += 1;
+      }
+    }
+
+    this.generate();
+  }
+}
