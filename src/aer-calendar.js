@@ -184,7 +184,7 @@ function Calendar() {
       }
 
       if (dayHasEvent == true) {
-        output += '<td class="aer-calendar-day aer-calendar-event-day" style="color: red">';
+        output += '<td class="aer-calendar-day aer-calendar-event-day" style="color:red;cursor:pointer">';
         output += dayIndex;
         output += '</td>';
       } else {
