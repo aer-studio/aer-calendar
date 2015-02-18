@@ -266,18 +266,20 @@ function Calendar() {
       }
       this.generate();
     }
-    var c, d;
-    var n = -1;
-    for (var i = 0; i < this.gStartDates.length; i++) {
-      c = this.gStartDates[i] - new Date(this.year, this.month - 1, e.target.innerHTML);
-      if (c < 86400000 && c >= 0) {
-        if (n == -1) {
-          d = i;
+    if (this.gapiEnabled) {
+      var c, d;
+      var n = -1;
+      for (var i = 0; i < this.gStartDates.length; i++) {
+        c = this.gStartDates[i] - new Date(this.year, this.month - 1, e.target.innerHTML);
+        if (c < 86400000 && c >= 0) {
+          if (n == -1) {
+            d = i;
+          }
+          n++;
         }
-        n++;
       }
-    }
-    this.generateEvent(d, n);
+      this.generateEvent(d, n);
+   }
   };
 
 
