@@ -1,4 +1,4 @@
-# aer-calendar
+#Aer Calendar
 
 Aer Calendar is a JavaScript library that allows for easy calendar generation and Google Calendar implementation.
 
