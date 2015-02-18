@@ -145,12 +145,7 @@ function Calendar() {
   \**                       **/
 
   this.generate = function() {
-    /**                                                               **\
-     *                              VARS                               *
-     *   output ---- the output string from the calendar generation    *
-     *   cellIndex - stores which cell the generator is currently in   *
-     *   dayIndex -- stores which day the generator is currently in    *
-    \**                                                               **/
+    
     var output, cellIndex, dayIndex;
 
     var output = '<table class="aer-calendar"><div>' + this.getMonthName() + ' ' + this.year + '</div><div class="aer-calendar-button-container"><button class="aer-calendar-prev-button">Prev</button><button class="aer-calendar-next-button">Next</button></div><thead class="aer-calendar-table-head"><tr "aer-calendar-weekday-row"><th class="aer-calendar-weekday">S</th><th class="aer-calendar-weekday">M</th><th class="aer-calendar-weekday">T</th><th class="aer-calendar-weekday">W</th><th class="aer-calendar-weekday">T</th><th class="aer-calendar-weekday">F</th><th class="aer-calendar-weekday">S</th></tr></thead><tbody class="aer-calendar-table-body"><tr class="aer-calendar-day-row">';
@@ -163,7 +158,6 @@ function Calendar() {
       output += '<td class="aer-calendar-day aer-calendar-empty-day"></td>';
     }
 
-    // Fill in the days of the month
     for (
       dayIndex = 1;
       dayIndex <= this.getDaysInMonth(this.year, this.month);
