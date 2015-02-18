@@ -1,6 +1,6 @@
 /**
  *
- * Aer Calendar v1.0
+ * Aer Calendar v2.1
  * -----------------
  * Aer Calendar is a JavaScript library that allows for easy generation of
  * calendars using a constructor.
@@ -109,6 +109,12 @@ function Calendar() {
     } else {
       this.autoGenerate = true;
     }
+
+    if (arg.useDivs === true || arg.useDivsOnly === true) {
+      this.useDivs = true;
+    } else {
+      this.useDivs = false;
+    }
   }
 
   this.gNames = [];
@@ -147,14 +153,14 @@ function Calendar() {
     \**                                                               **/
     var output, cellIndex, dayIndex;
 
-    var output = '<table class=\'aer-calendar\'><div>' + this.getMonthName() + ' ' + this.year + '</div><div><button class=\'aer-calendar-prev-button\'>Prev</button><button class=\'aer-calendar-next-button\'>Next</button></div><thead><tr><th>S</th><th>M</th><th>T</th><th>W</th><th>T</th><th>F</th><th>S</th></tr></thead><tbody><tr>';
+    var output = '<table class="aer-calendar"><div>' + this.getMonthName() + ' ' + this.year + '</div><div class="aer-calendar-button-container"><button class="aer-calendar-prev-button">Prev</button><button class="aer-calendar-next-button">Next</button></div><thead class="aer-calendar-table-head"><tr "aer-calendar-weekday-row"><th class="aer-calendar-weekday">S</th><th class="aer-calendar-weekday">M</th><th class="aer-calendar-weekday">T</th><th class="aer-calendar-weekday">W</th><th class="aer-calendar-weekday">T</th><th class="aer-calendar-weekday">F</th><th class="aer-calendar-weekday">S</th></tr></thead><tbody class="aer-calendar-table-body"><tr class="aer-calendar-day-row">';
 
     for (
       cellIndex = 1;
       cellIndex <= new Date(this.year, this.month - 1, 1).getDay();
       cellIndex++
     ) {
-      output += '<td></td>';
+      output += '<td class="aer-calendar-day aer-calendar-empty-day"></td>';
     }
 
     // Fill in the days of the month
@@ -178,15 +184,15 @@ function Calendar() {
       }
 
       if (dayHasEvent == true) {
-        output += '<td style=\'color: red\'>';
+        output += '<td class="aer-calendar-day aer-calendar-event-day" style="color: red">';
         output += dayIndex;
         output += '</td>';
       } else {
-        output += '<td>' + dayIndex + '</td>';
+        output += '<td class="aer-calendar-day">' + dayIndex + '</td>';
       }
 
       if (cellIndex % 7 === 0 && dayIndex != this.getDaysInMonth(this.year, this.month)) {
-        output += '</tr><tr>';
+        output += '</tr><tr class="aer-calendar-day-row">';
       } else if (dayIndex == this.getDaysInMonth(this.year, this.month)) {
         output += '</tr></tbody></table>';
       }
@@ -200,18 +206,33 @@ function Calendar() {
     var output = '';
     var i;
     for (i = d; i <= d + n; i++) {
-      if (typeof this.gNames[i] === 'string') {
-        output += '<h1 class=\'aer-calendar-event-name\'>' + this.gNames[i] + '</h1>';
+      if (this.useDivs === true) {
+        if (typeof this.gNames[i] === 'string') {
+          output += '<div class="aer-calendar-event-name">' + this.gNames[i] + '</div>';
+        } else {
+          output += '<div class="aer-calendar-event-name">No Title</div>';
+        }
+        if (typeof this.gDescriptions[i] === 'string') {
+          output += '<div class="aer-calendar-event-description">' + this.gDescriptions[i] + '</div>';
+        } else {
+          output += '<div class="aer-calendar-event-description">No Description</div>';
+        }
+        output += '<div class="aer-calendar-event-start-time">' + this.gStartDates[i].getHours() + ':' + this.gStartDates[i].getMinutes() + '</div>';
+        output += '<div class="aer-calendar-event-end-time">' + this.gEndDates[i].getHours() + ':' + this.gEndDates[i].getMinutes() + '</div>';
       } else {
-        output += '<h1 class=\'aer-calendar-event-name\'>No Title</h1>';
+        if (typeof this.gNames[i] === 'string') {
+          output += '<h1 class="aer-calendar-event-name">' + this.gNames[i] + '</h1>';
+        } else {
+          output += '<h1 class="aer-calendar-event-name">No Title</h1>';
+        }
+        if (typeof this.gDescriptions[i] === 'string') {
+          output += '<p class="aer-calendar-event-description">' + this.gDescriptions[i] + '</p>';
+        } else {
+          output += '<p class="aer-calendar-event-description">No Description</p>';
+        }
+        output += '<p class="aer-calendar-event-start-time">' + this.gStartDates[i].getHours() + ':' + this.gStartDates[i].getMinutes() + '</p>';
+        output += '<p class="aer-calendar-event-end-time">' + this.gEndDates[i].getHours() + ':' + this.gEndDates[i].getMinutes() + '</p>';
       }
-      if (typeof this.gDescriptions[i] === 'string') {
-        output += '<p class=\'aer-calendar-event-description\'>' + this.gDescriptions[i] + '</div>';
-      } else {
-        output += '<p class=\'aer-calendar-event-description\'>No Description</p>';
-      }
-      output += '<p class=\'aer-calendar-event-start-time\'>' + this.gStartDates[i].getHours() + ':' + this.gStartDates[i].getMinutes() + '</p>';
-      output += '<p class=\'aer-calendar-event-end-time\'>' + this.gEndDates[i].getHours() + ':' + this.gEndDates[i].getMinutes() + '</p>';
     }
 
     this.eventElement.innerHTML = output;
