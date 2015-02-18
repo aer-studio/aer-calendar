@@ -4,15 +4,15 @@ Aer Calendar is a JavaScript library that allows for easy calendar generation an
 
 You can pass arguments into the constructor four ways:
 ``` JavaScript
-new Calendar(id)
-new Calendar(id, month) // defaults to current
+new Calendar(id) // uses current year and month
+new Calendar(id, month) // uses the current year
 new Calendar(id, month, year)
 new Calendar({
   id, month, year, apiKey, calendarId, generate
 })
 ```
 
-##Using the Constructor
+##Passing in an object
 Parameters|Description
 ---|---
 id|the ID of the element in which to generate the calendar
